@@ -1,0 +1,84 @@
+---
+title: "p8105_hw2_qy2234"
+author: "Michael Yan"
+date: "9/25/2019"
+output: github_document
+---
+
+## Problem 1
+
+```{r Question_one_part_one}
+## load the tidyverse and readxl package
+library(tidyverse)
+library(readxl)
+
+## specify the sheet in the Excel file and to omit non-data entries
+tw_data = 
+  read_excel(
+  "./P1_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = 1) %>%
+  janitor::clean_names() %>% 
+  select(-x15) %>% 
+  drop_na(dumpster) %>%
+  select(dumpster, month, year, everything()) %>% 
+  mutate(sports_balls = round(sports_balls, digits = 0)) %>% 
+  mutate(sports_balls = as.integer(sports_balls))
+```
+
+```{r Question_one_2017_2018}
+## read and clean precipitation data for 2017 and 2018
+
+## clear 2017 data
+tw_data_17 = read_excel(
+  "./P1_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
+  sheet = 4, skip = 1) %>%
+  janitor::clean_names() %>% 
+  drop_na(total) %>% 
+  mutate(year = "2017") %>% 
+  rename(percipitation_in_in = total)
+
+## clear 2018 data
+tw_data_18 = read_excel(
+  "./P1_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
+  sheet = 3, skip = 1) %>%
+  janitor::clean_names() %>% 
+  drop_na(total) %>% 
+  mutate(year = "2018") %>% 
+  rename(percipitation_in_in = total)
+
+## combine 2017 2018 data
+tw_data_17_18 = 
+  left_join(tw_data_17, tw_data_18, by = "month") %>% 
+  drop_na(month) %>%
+  mutate(month = as.character(month.name))
+```
+#### Question_one_description
+* The number of observations in tw_data is 
+`r nrow(tw_data)`
+* The number of observations in tw_data_17_18 is 
+`r nrow(tw_data_17_18)`
+* Some key variables in tw-data include 
+`r colnames(tw_data)`
+* Some key variables in tw_data_17_18 include 
+`r colnames(tw_data_17_18)`
+* The total precipitation in 2018 is 
+`r sum(pull(tw_data_17_18, percipitation_in_in.y), na.rm = TRUE)`
+* The median number of sports balls in a dumpster in 2017 is
+`r median(pull(tw_data, dumpster), na.rm = TRUE)`
+
+
+
+## Problem 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
