@@ -15,12 +15,11 @@ library(readxl)
 ## import data and specify the sheet in the Excel file and to omit non-data entries
 tw_data = 
   read_excel(
-  "./P1_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = 1) %>%
+  "./P1_data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", sheet = 1) %>%
   janitor::clean_names() %>% 
-  select(-x15) %>% 
+  select(-x15,-x16, -x17) %>% 
   drop_na(dumpster) %>%
   select(dumpster, month, year, everything()) %>% 
-  mutate(sports_balls = round(sports_balls, digits = 0)) %>% 
   mutate(sports_balls = as.integer(sports_balls))
 ```
 
@@ -29,8 +28,8 @@ tw_data =
 
 ## import and clear 2017 data
 tw_data_17 = read_excel(
-  "./P1_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
-  sheet = 4, skip = 1) %>%
+  "./P1_data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+  sheet = 6, skip = 1) %>%
   janitor::clean_names() %>% 
   drop_na(total) %>% 
   mutate(year = "2017") %>% 
@@ -38,8 +37,8 @@ tw_data_17 = read_excel(
 
 ## import and clear 2018 data
 tw_data_18 = read_excel(
-  "./P1_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
-  sheet = 3, skip = 1) %>%
+  "./P1_data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+  sheet = 5, skip = 1) %>%
   janitor::clean_names() %>% 
   drop_na(total) %>% 
   mutate(year = "2018") %>% 
