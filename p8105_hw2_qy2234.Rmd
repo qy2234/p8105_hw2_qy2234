@@ -49,7 +49,7 @@ tw_data_18 = read_excel(
 tw_data_17_18 = 
   left_join(tw_data_17, tw_data_18, by = "month") %>% 
   drop_na(month) %>%
-  mutate(month = as.character(month.name))
+  mutate(month = month.name)
 ```
 #### Question_one_description
 * The number of observations in tw_data is 
@@ -57,22 +57,97 @@ tw_data_17_18 =
 * The number of observations in tw_data_17_18 is 
 `r nrow(tw_data_17_18)`
 * Some key variables in tw-data include 
-`r colnames(tw_data)`
+dumpster, month, and year
 * Some key variables in tw_data_17_18 include 
-`r colnames(tw_data_17_18)`
+month, year
 * The total precipitation in 2018 is 
 `r sum(pull(tw_data_17_18, percipitation_in_in.y), na.rm = TRUE)`
 * The median number of sports balls in a dumpster in 2017 is
 `r median(pull(tw_data, dumpster), na.rm = TRUE)`
 
-
-
 ## Problem 2
 
+```{r Problem_2_part_1}
+## load the tidyverse and readxl package
+library(tidyverse)
+library(readxl)
+
+## clean the data in pols-month.csv
+pols_month_data = read_csv(
+  "./P2_data/fivethirtyeight_datasets/pols-month.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(mon, c("year", "month", "day"), convert = TRUE) %>% 
+  mutate(month = month.abb[month]) %>% 
+  mutate(month = str_to_lower(month)) %>% 
+  pivot_longer(gov_gop:rep_gop, 
+               names_to = "gop_groups",
+               values_to = "count_gop") %>% 
+  pivot_longer(gov_dem:rep_dem, 
+               names_to = "dem_groups",
+               values_to = "count_dem") %>% 
+  pivot_longer(prez_gop:prez_dem, 
+               names_to = "president",
+               values_to = "prez_gop_or_dem") %>% 
+  select(-president, -day) %>% 
+  rename(president = prez_gop_or_dem)
+```
+
+```{r Problem_2_part_2}
+## clean the data in snp.csv
+snp_data = read_csv(
+  "./P2_data/fivethirtyeight_datasets/snp.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(date, c("month", "day", "year"), convert = TRUE) %>% 
+  mutate(month = month.abb[month]) %>% 
+  mutate(month = str_to_lower(month)) %>%
+  arrange(year, month) %>% 
+  select(year, month, day, close)
+```
+
+```{r Problem_2_part_3}
+## clean the data in unemployment.csv
+unemployment_data = read_csv(
+  "./P2_data/fivethirtyeight_datasets/unemployment.csv") %>%
+  janitor::clean_names() %>% 
+  pivot_longer(
+    jan:dec,
+    names_to = "month", 
+    values_to = "unemployment") 
+```
+
+```{r Problem_2_part_4}
+## join the datasets by merging snp into pols, and merging unemployment into the result
+pols_snp = 
+  left_join(pols_month_data, snp_data, by = "year")
+pols_snp_unemployment = 
+  left_join(pols_snp, unemployment_data, by = "year")
+```
+Write a short paragraph about these datasets. Explain briefly what each dataset contained, and describe the resulting dataset (e.g. give the dimension, range of years, and names of key variables).
+
+#### Question_two_description
+* The pols_month_data contains the number of governors, senators, and representatives 
+from both parties at a given time. The snp_data provides the closing values of the 
+S&P stock index on the associated date. The unemployment_data shows 
+the percentage of unemployment in each month of the associated year. Finally, 
+the pols_snp_unemployment dataset gives us a view of 
+all the information associate with a given time point, 
+including the number of governors, senators, and representatives 
+from both parties, the S&P stock index, and the percentage of unemployment. 
+It also gives us the information about when the measurements were done
+(which month, or day, if applicabel).
+
+The dimension of the final resulting dataset is 
+`r nrow(pols_snp_unemployment)` by `r ncol(pols_snp_unemployment)`
+
+The range of years is 
+`r min(pull(pols_month_data, year))` - `r max(pull(pols_month_data, year))` 
+
+The names of key variables include year and month
 
 
 
 
+## Problem 3
 
 
 
