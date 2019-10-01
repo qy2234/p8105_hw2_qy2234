@@ -12,7 +12,7 @@ output: github_document
 library(tidyverse)
 library(readxl)
 
-## specify the sheet in the Excel file and to omit non-data entries
+## import data and specify the sheet in the Excel file and to omit non-data entries
 tw_data = 
   read_excel(
   "./P1_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = 1) %>%
@@ -27,7 +27,7 @@ tw_data =
 ```{r Question_one_2017_2018}
 ## read and clean precipitation data for 2017 and 2018
 
-## clear 2017 data
+## import and clear 2017 data
 tw_data_17 = read_excel(
   "./P1_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
   sheet = 4, skip = 1) %>%
@@ -36,7 +36,7 @@ tw_data_17 = read_excel(
   mutate(year = "2017") %>% 
   rename(percipitation_in_in = total)
 
-## clear 2018 data
+## import and clear 2018 data
 tw_data_18 = read_excel(
   "./P1_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", 
   sheet = 3, skip = 1) %>%
@@ -65,6 +65,7 @@ month, year
 * The median number of sports balls in a dumpster in 2017 is
 `r median(pull(tw_data, dumpster), na.rm = TRUE)`
 
+
 ## Problem 2
 
 ```{r Problem_2_part_1}
@@ -72,7 +73,7 @@ month, year
 library(tidyverse)
 library(readxl)
 
-## clean the data in pols-month.csv
+## import and clean the data in pols-month.csv
 pols_month_data = read_csv(
   "./P2_data/fivethirtyeight_datasets/pols-month.csv") %>% 
   janitor::clean_names() %>% 
@@ -93,7 +94,7 @@ pols_month_data = read_csv(
 ```
 
 ```{r Problem_2_part_2}
-## clean the data in snp.csv
+## import and clean the data in snp.csv
 snp_data = read_csv(
   "./P2_data/fivethirtyeight_datasets/snp.csv") %>% 
   janitor::clean_names() %>% 
@@ -105,7 +106,7 @@ snp_data = read_csv(
 ```
 
 ```{r Problem_2_part_3}
-## clean the data in unemployment.csv
+## import and clean the data in unemployment.csv
 unemployment_data = read_csv(
   "./P2_data/fivethirtyeight_datasets/unemployment.csv") %>%
   janitor::clean_names() %>% 
@@ -145,10 +146,46 @@ The range of years is
 The names of key variables include year and month
 
 
-
-
 ## Problem 3
 
+```{r Question_three_part_one}
+## import and clean the data in unemployment.csv
+baby_name_data = read_csv(
+  "./P3_data/Popular_Baby_Names.csv") %>%
+  janitor::clean_names() %>% 
+  distinct() %>% 
+  mutate(gender = str_to_lower(gender)) %>% 
+  mutate(ethnicity = str_to_lower(ethnicity)) %>% 
+  mutate(childs_first_name = str_to_lower(childs_first_name))
+```
+
+Produce a well-structured, reader-friendly table showing the rank in popularity of the name “Olivia” as a female baby name over time; this should have rows for ethnicities and columns for year. Produce a similar table showing the most popular name among male children over time.
+
+```{r Question_three_part_two}
+## produce a well-structured, reader-friendly table for girl's name
+baby_name_data_tidy_girl = 
+  pivot_wider(
+  baby_name_data, 
+  names_from = "year_of_birth", 
+  values_from = "count")
+
+## produce a well-structured, reader-friendly table for boy's name
+baby_name_data_tidy_boy = 
+  pivot_wider(
+  baby_name_data, 
+  names_from = "year_of_birth", 
+  values_from = "count") %>% 
+  arrange(desc(gender))
+```
+
+```{r Question_three_part_three}
+## for male, white non-hispanic children born in 2016, produce a scatter plot
+data_for_scatter_plot = 
+  filter(baby_name_data, year_of_birth == 2016, gender == "male", 
+         ethnicity == "white non hispanic")
+ggplot(baby_name_data, aes(x = rank, y = count)) + 
+  geom_point()
+```
 
 
 
