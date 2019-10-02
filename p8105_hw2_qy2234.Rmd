@@ -68,10 +68,6 @@ month, year
 ## Problem 2
 
 ```{r Problem_2_part_1}
-## load the tidyverse and readxl package
-library(tidyverse)
-library(readxl)
-
 ## import and clean the data in pols-month.csv
 pols_month_data = read_csv(
   "./P2_data/fivethirtyeight_datasets/pols-month.csv") %>% 
@@ -122,7 +118,6 @@ pols_snp =
 pols_snp_unemployment = 
   left_join(pols_snp, unemployment_data, by = "year")
 ```
-Write a short paragraph about these datasets. Explain briefly what each dataset contained, and describe the resulting dataset (e.g. give the dimension, range of years, and names of key variables).
 
 #### Question_two_description
 * The pols_month_data contains the number of governors, senators, and representatives 
@@ -156,7 +151,9 @@ baby_name_data = read_csv(
   mutate(ethnicity = str_to_lower(ethnicity)) %>% 
   mutate(childs_first_name = str_to_lower(childs_first_name)) %>% 
   distinct() %>% 
-  mutate(ethnicity = recode(ethnicity, "asian and paci" = "asian and pacific islander")) %>%   mutate(ethnicity = recode(ethnicity, "black non hisp" = "black non hispanic")) %>%           mutate(ethnicity = recode(ethnicity, "white non hisp" = "white non hispanic")) %>% 
+  mutate(ethnicity = recode(ethnicity, "asian and paci" = "asian and pacific islander")) %>%
+  mutate(ethnicity = recode(ethnicity, "black non hisp" = "black non hispanic")) %>%
+  mutate(ethnicity = recode(ethnicity, "white non hisp" = "white non hispanic")) %>%
   mutate(ethnicity = factor(ethnicity))
 ```
 
@@ -180,7 +177,7 @@ baby_name_data_tidy_boy =
   names_from = "year_of_birth", 
   values_from = "childs_first_name")
 ```
-Produce a well-structured, reader-friendly table showing the rank in popularity of the name “Olivia” as a female baby name over time; this should have rows for ethnicities and columns for year. Produce a similar table showing the most popular name among male children over time.
+
 ```{r Question_three_part_three}
 ## for male, white non-hispanic children born in 2016, produce a scatter plot
 data_for_scatter_plot = 
