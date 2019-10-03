@@ -62,7 +62,7 @@ month, year
 * The total precipitation in 2018 is 
 `r sum(pull(tw_data_17_18, percipitation_in_in.y), na.rm = TRUE)`
 * The median number of sports balls in a dumpster in 2017 is
-`r median(pull(tw_data, dumpster), na.rm = TRUE)`
+`r median(pull(tw_data, sports_balls), na.rm = TRUE)`
 
 
 ## Problem 2
